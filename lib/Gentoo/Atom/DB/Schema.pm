@@ -13,9 +13,29 @@ our @ISA = ('DBIx::Class::Schema');
 
 sub schema_version { 1 }
 
+my $is_sync;
+
+BEGIN {
+
+    $is_sync = sub {
+        $_[0]->add_columns(
+            'sync_id' => {
+                data_type      => 'integer',
+                is_nullable    => 1,
+                is_numeric     => 1,
+                is_foreign_key => 1,
+            },
+        );
+        $_[0]->belongs_to(
+            'sync' => 'Gentoo::Atom::DB::Schema::Result::Sync',
+            { 'foreign.sync_id' => 'self.sync_id', }
+        );
+    };
+}
+
 for my $class (
     qw( Category Package Version SupportLevel Architecture VersionSupport Profile Mask
-    MaskImpact Trait NoteKind Note TraitApplies NoteApplies
+    MaskImpact Trait NoteKind Note TraitApplies NoteApplies Sync
     )
   )
 {
@@ -25,6 +45,32 @@ for my $class (
           || $class,
         "Gentoo::Atom::DB::Schema::Result::$class"
     );
+}
+
+BEGIN {    # Sync
+    package    # hide
+      Gentoo::Atom::DB::Schema::Result::Sync;
+
+    our @ISA = ('DBIx::Class::Core');
+    __PACKAGE__->table('sync');
+    __PACKAGE__->add_columns(
+        'sync_id' => {
+            data_type         => 'integer',
+            is_nullable       => 0,
+            is_auto_increment => 1,
+            is_numeric        => 1,
+        },
+        'sync_start' => {
+            data_type   => 'text',
+            is_nullable => 0,
+        },
+        'sync_stop' => {
+            data_type   => 'text',
+            is_nullable => 1,
+        },
+    );
+    __PACKAGE__->set_primary_key('sync_id');
+    __PACKAGE__->add_unique_constraint( ['sync_start'] );
 }
 
 BEGIN {    # Category
@@ -42,6 +88,7 @@ BEGIN {    # Category
             is_numeric        => 1,
         },
         'category_name' => { data_type => 'text', is_nullable => 0, },
+
     );
     __PACKAGE__->set_primary_key('category_id');
     __PACKAGE__->add_unique_constraint( ['category_name'] );
@@ -51,6 +98,8 @@ BEGIN {    # Category
             'foreign.category_id' => 'self.category_id',
         }
     );
+    $is_sync->(__PACKAGE__);
+
 }
 
 BEGIN {    # Package
@@ -92,6 +141,7 @@ BEGIN {    # Package
             'foreign.package_id' => 'self.package_id',
         }
     );
+    $is_sync->(__PACKAGE__);
 }
 
 BEGIN {    # Version
@@ -121,6 +171,7 @@ BEGIN {    # Version
             is_numeric     => 1,
             is_foreign_key => 1,
         },
+
     );
     __PACKAGE__->set_primary_key('version_id');
     __PACKAGE__->add_unique_constraint(
@@ -147,6 +198,8 @@ BEGIN {    # Version
             'on_delete' => 'CASCADE',
         },
     );
+    $is_sync->(__PACKAGE__);
+
 }
 
 BEGIN {    # SupportLevel
@@ -169,6 +222,8 @@ BEGIN {    # SupportLevel
     );
     __PACKAGE__->set_primary_key('support_level_id');
     __PACKAGE__->add_unique_constraint( ['support_level_name'] );
+    $is_sync->(__PACKAGE__);
+
 }
 
 BEGIN {    # Architecture
@@ -191,6 +246,8 @@ BEGIN {    # Architecture
     );
     __PACKAGE__->set_primary_key('architecture_id');
     __PACKAGE__->add_unique_constraint( ['architecture_name'] );
+    $is_sync->(__PACKAGE__);
+
 }
 
 BEGIN {    # VersionSupport
@@ -235,6 +292,7 @@ BEGIN {    # VersionSupport
             'foreign.support_level_id' => 'self.support_level_id'
         },
     );
+    $is_sync->(__PACKAGE__);
 }
 
 BEGIN {    # Profile
@@ -284,6 +342,7 @@ BEGIN {    # Profile
             'join_type' => 'left',
         }
     );
+    $is_sync->(__PACKAGE__);
 }
 
 BEGIN {    # Mask
@@ -322,6 +381,7 @@ BEGIN {    # Mask
     );
     __PACKAGE__->set_primary_key('mask_id');
     __PACKAGE__->add_unique_constraint( ['mask_content_checksum'], );
+    $is_sync->(__PACKAGE__);
 }
 
 BEGIN {    # MaskImpact
@@ -365,6 +425,7 @@ BEGIN {    # MaskImpact
             'foreign.mask_id' => 'self.mask_id',
         }
     );
+    $is_sync->(__PACKAGE__);
 }
 
 BEGIN {    # Trait
@@ -387,6 +448,7 @@ BEGIN {    # Trait
     );
     __PACKAGE__->set_primary_key('trait_id');
     __PACKAGE__->add_unique_constraint( ['trait_name'] );
+    $is_sync->(__PACKAGE__);
 }
 
 BEGIN {    # NoteKind
@@ -409,6 +471,7 @@ BEGIN {    # NoteKind
     );
     __PACKAGE__->set_primary_key('note_kind_id');
     __PACKAGE__->add_unique_constraint( ['note_kind_name'] );
+    $is_sync->(__PACKAGE__);
 }
 
 BEGIN {    # Note
@@ -441,6 +504,7 @@ BEGIN {    # Note
             'foreign.note_kind_id' => 'self.note_kind_id',
         }
     );
+    $is_sync->(__PACKAGE__);
 }
 
 BEGIN {    # TraitApplies
@@ -480,6 +544,7 @@ BEGIN {    # TraitApplies
             'foreign.version_id' => 'self.version_id',
         },
     );
+    $is_sync->(__PACKAGE__);
 }
 
 BEGIN {    # NoteApplies
@@ -519,6 +584,7 @@ BEGIN {    # NoteApplies
             'foreign.version_id' => 'self.version_id',
         },
     );
+    $is_sync->(__PACKAGE__);
 }
 1;
 

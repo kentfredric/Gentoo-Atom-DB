@@ -28,6 +28,19 @@ schema:
           reference_fields: []
           reference_table: ''
           type: UNIQUE
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_id
+          match_type: ''
+          name: architecture_fk_sync_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - sync_id
+          reference_table: sync
+          type: FOREIGN KEY
       fields:
         architecture_id:
           data_type: integer
@@ -50,10 +63,25 @@ schema:
           order: 2
           size:
             - 0
-      indices: []
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_id
+          order: 3
+          size:
+            - 0
+      indices:
+        - fields:
+            - sync_id
+          name: architecture_idx_sync_id
+          options: []
+          type: NORMAL
       name: architecture
       options: []
-      order: 1
+      order: 2
     category:
       constraints:
         - deferrable: 1
@@ -80,6 +108,19 @@ schema:
           reference_fields: []
           reference_table: ''
           type: UNIQUE
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_id
+          match_type: ''
+          name: category_fk_sync_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - sync_id
+          reference_table: sync
+          type: FOREIGN KEY
       fields:
         category_id:
           data_type: integer
@@ -102,10 +143,25 @@ schema:
           order: 2
           size:
             - 0
-      indices: []
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_id
+          order: 3
+          size:
+            - 0
+      indices:
+        - fields:
+            - sync_id
+          name: category_idx_sync_id
+          options: []
+          type: NORMAL
       name: category
       options: []
-      order: 2
+      order: 3
     mask:
       constraints:
         - deferrable: 1
@@ -132,6 +188,19 @@ schema:
           reference_fields: []
           reference_table: ''
           type: UNIQUE
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_id
+          match_type: ''
+          name: mask_fk_sync_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - sync_id
+          reference_table: sync
+          type: FOREIGN KEY
       fields:
         mask_atoms:
           data_type: text
@@ -194,10 +263,25 @@ schema:
           order: 1
           size:
             - 0
-      indices: []
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_id
+          order: 7
+          size:
+            - 0
+      indices:
+        - fields:
+            - sync_id
+          name: mask_idx_sync_id
+          options: []
+          type: NORMAL
       name: mask
       options: []
-      order: 3
+      order: 4
     mask_impact:
       constraints:
         - deferrable: 1
@@ -241,6 +325,19 @@ schema:
         - deferrable: 1
           expression: ''
           fields:
+            - sync_id
+          match_type: ''
+          name: mask_impact_fk_sync_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - sync_id
+          reference_table: sync
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: ''
+          fields:
             - version_id
           match_type: ''
           name: mask_impact_fk_version_id
@@ -273,6 +370,16 @@ schema:
           order: 1
           size:
             - 0
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_id
+          order: 4
+          size:
+            - 0
         version_id:
           data_type: integer
           default_value: ~
@@ -290,13 +397,18 @@ schema:
           options: []
           type: NORMAL
         - fields:
+            - sync_id
+          name: mask_impact_idx_sync_id
+          options: []
+          type: NORMAL
+        - fields:
             - version_id
           name: mask_impact_idx_version_id
           options: []
           type: NORMAL
       name: mask_impact
       options: []
-      order: 12
+      order: 13
     note:
       constraints:
         - deferrable: 1
@@ -323,6 +435,19 @@ schema:
           reference_fields:
             - note_kind_id
           reference_table: note_kind
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_id
+          match_type: ''
+          name: note_fk_sync_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - sync_id
+          reference_table: sync
           type: FOREIGN KEY
       fields:
         note_description:
@@ -356,15 +481,30 @@ schema:
           order: 2
           size:
             - 0
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_id
+          order: 4
+          size:
+            - 0
       indices:
         - fields:
             - note_kind_id
           name: note_idx_note_kind_id
           options: []
           type: NORMAL
+        - fields:
+            - sync_id
+          name: note_idx_sync_id
+          options: []
+          type: NORMAL
       name: note
       options: []
-      order: 7
+      order: 8
     note_applies:
       constraints:
         - deferrable: 1
@@ -391,6 +531,19 @@ schema:
           reference_fields:
             - note_id
           reference_table: note
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_id
+          match_type: ''
+          name: note_applies_fk_sync_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - sync_id
+          reference_table: sync
           type: FOREIGN KEY
         - deferrable: 1
           expression: ''
@@ -427,6 +580,16 @@ schema:
           order: 2
           size:
             - 0
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_id
+          order: 4
+          size:
+            - 0
         version_id:
           data_type: integer
           default_value: ~
@@ -444,13 +607,18 @@ schema:
           options: []
           type: NORMAL
         - fields:
+            - sync_id
+          name: note_applies_idx_sync_id
+          options: []
+          type: NORMAL
+        - fields:
             - version_id
           name: note_applies_idx_version_id
           options: []
           type: NORMAL
       name: note_applies
       options: []
-      order: 14
+      order: 15
     note_kind:
       constraints:
         - deferrable: 1
@@ -477,6 +645,19 @@ schema:
           reference_fields: []
           reference_table: ''
           type: UNIQUE
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_id
+          match_type: ''
+          name: note_kind_fk_sync_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - sync_id
+          reference_table: sync
+          type: FOREIGN KEY
       fields:
         note_kind_id:
           data_type: integer
@@ -499,10 +680,25 @@ schema:
           order: 2
           size:
             - 0
-      indices: []
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_id
+          order: 3
+          size:
+            - 0
+      indices:
+        - fields:
+            - sync_id
+          name: note_kind_idx_sync_id
+          options: []
+          type: NORMAL
       name: note_kind
       options: []
-      order: 4
+      order: 5
     package:
       constraints:
         - deferrable: 1
@@ -543,6 +739,19 @@ schema:
             - category_id
           reference_table: category
           type: FOREIGN KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_id
+          match_type: ''
+          name: package_fk_sync_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - sync_id
+          reference_table: sync
+          type: FOREIGN KEY
       fields:
         category_id:
           data_type: integer
@@ -575,15 +784,30 @@ schema:
           order: 2
           size:
             - 0
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_id
+          order: 4
+          size:
+            - 0
       indices:
         - fields:
             - category_id
           name: package_idx_category_id
           options: []
           type: NORMAL
+        - fields:
+            - sync_id
+          name: package_idx_sync_id
+          options: []
+          type: NORMAL
       name: package
       options: []
-      order: 8
+      order: 9
     profile:
       constraints:
         - deferrable: 1
@@ -636,6 +860,19 @@ schema:
             - profile_id
           reference_table: profile
           type: FOREIGN KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_id
+          match_type: ''
+          name: profile_fk_sync_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - sync_id
+          reference_table: sync
+          type: FOREIGN KEY
       fields:
         architecture_id:
           data_type: integer
@@ -678,6 +915,16 @@ schema:
           order: 2
           size:
             - 0
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_id
+          order: 5
+          size:
+            - 0
       indices:
         - fields:
             - architecture_id
@@ -689,9 +936,14 @@ schema:
           name: profile_idx_parent_profile_id
           options: []
           type: NORMAL
+        - fields:
+            - sync_id
+          name: profile_idx_sync_id
+          options: []
+          type: NORMAL
       name: profile
       options: []
-      order: 9
+      order: 10
     support_level:
       constraints:
         - deferrable: 1
@@ -718,6 +970,19 @@ schema:
           reference_fields: []
           reference_table: ''
           type: UNIQUE
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_id
+          match_type: ''
+          name: support_level_fk_sync_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - sync_id
+          reference_table: sync
+          type: FOREIGN KEY
       fields:
         support_level_id:
           data_type: integer
@@ -740,10 +1005,87 @@ schema:
           order: 2
           size:
             - 0
-      indices: []
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_id
+          order: 3
+          size:
+            - 0
+      indices:
+        - fields:
+            - sync_id
+          name: support_level_idx_sync_id
+          options: []
+          type: NORMAL
       name: support_level
       options: []
-      order: 5
+      order: 6
+    sync:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_start
+          match_type: ''
+          name: sync_sync_start
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+      fields:
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: sync_id
+          order: 1
+          size:
+            - 0
+        sync_start:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: sync_start
+          order: 2
+          size:
+            - 0
+        sync_stop:
+          data_type: text
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_stop
+          order: 3
+          size:
+            - 0
+      indices: []
+      name: sync
+      options: []
+      order: 1
     trait:
       constraints:
         - deferrable: 1
@@ -770,7 +1112,30 @@ schema:
           reference_fields: []
           reference_table: ''
           type: UNIQUE
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_id
+          match_type: ''
+          name: trait_fk_sync_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - sync_id
+          reference_table: sync
+          type: FOREIGN KEY
       fields:
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_id
+          order: 3
+          size:
+            - 0
         trait_id:
           data_type: integer
           default_value: ~
@@ -792,10 +1157,15 @@ schema:
           order: 2
           size:
             - 0
-      indices: []
+      indices:
+        - fields:
+            - sync_id
+          name: trait_idx_sync_id
+          options: []
+          type: NORMAL
       name: trait
       options: []
-      order: 6
+      order: 7
     trait_applies:
       constraints:
         - deferrable: 1
@@ -810,6 +1180,19 @@ schema:
           reference_fields: []
           reference_table: ''
           type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_id
+          match_type: ''
+          name: trait_applies_fk_sync_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - sync_id
+          reference_table: sync
+          type: FOREIGN KEY
         - deferrable: 1
           expression: ''
           fields:
@@ -837,6 +1220,16 @@ schema:
           reference_table: version
           type: FOREIGN KEY
       fields:
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_id
+          order: 4
+          size:
+            - 0
         trait_applies_id:
           data_type: integer
           default_value: ~
@@ -870,6 +1263,11 @@ schema:
             - 0
       indices:
         - fields:
+            - sync_id
+          name: trait_applies_idx_sync_id
+          options: []
+          type: NORMAL
+        - fields:
             - trait_id
           name: trait_applies_idx_trait_id
           options: []
@@ -881,7 +1279,7 @@ schema:
           type: NORMAL
       name: trait_applies
       options: []
-      order: 13
+      order: 14
     version:
       constraints:
         - deferrable: 1
@@ -938,6 +1336,19 @@ schema:
             - category_id
           reference_table: package
           type: FOREIGN KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_id
+          match_type: ''
+          name: version_fk_sync_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - sync_id
+          reference_table: sync
+          type: FOREIGN KEY
       fields:
         category_id:
           data_type: integer
@@ -957,6 +1368,16 @@ schema:
           is_unique: 1
           name: package_id
           order: 4
+          size:
+            - 0
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_id
+          order: 5
           size:
             - 0
         version_id:
@@ -992,9 +1413,14 @@ schema:
           name: version_idx_package_id_category_id
           options: []
           type: NORMAL
+        - fields:
+            - sync_id
+          name: version_idx_sync_id
+          options: []
+          type: NORMAL
       name: version
       options: []
-      order: 10
+      order: 11
     version_support:
       constraints:
         - deferrable: 1
@@ -1048,6 +1474,19 @@ schema:
             - support_level_id
           reference_table: support_level
           type: FOREIGN KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - sync_id
+          match_type: ''
+          name: version_support_fk_sync_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - sync_id
+          reference_table: sync
+          type: FOREIGN KEY
       fields:
         architecture_id:
           data_type: integer
@@ -1067,6 +1506,16 @@ schema:
           is_unique: 1
           name: support_level_id
           order: 3
+          size:
+            - 0
+        sync_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: sync_id
+          order: 4
           size:
             - 0
         version_support_id:
@@ -1091,9 +1540,14 @@ schema:
           name: version_support_idx_support_level_id
           options: []
           type: NORMAL
+        - fields:
+            - sync_id
+          name: version_support_idx_sync_id
+          options: []
+          type: NORMAL
       name: version_support
       options: []
-      order: 11
+      order: 12
   triggers: {}
   views: {}
 translator:
@@ -1112,6 +1566,7 @@ translator:
       - Package
       - Profile
       - SupportLevel
+      - Sync
       - Trait
       - TraitApplies
       - Version
