@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::PostgreSQL
--- Created on Thu Oct 12 10:31:28 2017
+-- Created on Thu Oct 12 10:44:59 2017
 -- 
 ;
 --
@@ -161,22 +161,6 @@ CREATE INDEX "version_idx_sync_id" on "version" ("sync_id");
 
 ;
 --
--- Table: version_support
---
-CREATE TABLE "version_support" (
-  "version_support_id" serial NOT NULL,
-  "architecture_id" integer NOT NULL,
-  "support_level_id" integer NOT NULL,
-  "sync_id" integer,
-  PRIMARY KEY ("version_support_id"),
-  CONSTRAINT "version_support_architecture_id_support_level_id" UNIQUE ("architecture_id", "support_level_id")
-);
-CREATE INDEX "version_support_idx_architecture_id" on "version_support" ("architecture_id");
-CREATE INDEX "version_support_idx_support_level_id" on "version_support" ("support_level_id");
-CREATE INDEX "version_support_idx_sync_id" on "version_support" ("sync_id");
-
-;
---
 -- Table: mask_impact
 --
 CREATE TABLE "mask_impact" (
@@ -220,6 +204,24 @@ CREATE TABLE "note_applies" (
 CREATE INDEX "note_applies_idx_note_id" on "note_applies" ("note_id");
 CREATE INDEX "note_applies_idx_sync_id" on "note_applies" ("sync_id");
 CREATE INDEX "note_applies_idx_version_id" on "note_applies" ("version_id");
+
+;
+--
+-- Table: version_support
+--
+CREATE TABLE "version_support" (
+  "version_support_id" serial NOT NULL,
+  "architecture_id" integer NOT NULL,
+  "support_level_id" integer NOT NULL,
+  "version_id" integer NOT NULL,
+  "sync_id" integer,
+  PRIMARY KEY ("version_support_id"),
+  CONSTRAINT "version_support_architecture_id_support_level_id" UNIQUE ("architecture_id", "support_level_id")
+);
+CREATE INDEX "version_support_idx_architecture_id" on "version_support" ("architecture_id");
+CREATE INDEX "version_support_idx_support_level_id" on "version_support" ("support_level_id");
+CREATE INDEX "version_support_idx_sync_id" on "version_support" ("sync_id");
+CREATE INDEX "version_support_idx_version_id" on "version_support" ("version_id");
 
 ;
 --
@@ -291,18 +293,6 @@ ALTER TABLE "version" ADD CONSTRAINT "version_fk_sync_id" FOREIGN KEY ("sync_id"
   REFERENCES "sync" ("sync_id") DEFERRABLE;
 
 ;
-ALTER TABLE "version_support" ADD CONSTRAINT "version_support_fk_architecture_id" FOREIGN KEY ("architecture_id")
-  REFERENCES "architecture" ("architecture_id") DEFERRABLE;
-
-;
-ALTER TABLE "version_support" ADD CONSTRAINT "version_support_fk_support_level_id" FOREIGN KEY ("support_level_id")
-  REFERENCES "support_level" ("support_level_id") DEFERRABLE;
-
-;
-ALTER TABLE "version_support" ADD CONSTRAINT "version_support_fk_sync_id" FOREIGN KEY ("sync_id")
-  REFERENCES "sync" ("sync_id") DEFERRABLE;
-
-;
 ALTER TABLE "mask_impact" ADD CONSTRAINT "mask_impact_fk_mask_id" FOREIGN KEY ("mask_id")
   REFERENCES "mask" ("mask_id") DEFERRABLE;
 
@@ -336,6 +326,22 @@ ALTER TABLE "note_applies" ADD CONSTRAINT "note_applies_fk_sync_id" FOREIGN KEY 
 
 ;
 ALTER TABLE "note_applies" ADD CONSTRAINT "note_applies_fk_version_id" FOREIGN KEY ("version_id")
+  REFERENCES "version" ("version_id") DEFERRABLE;
+
+;
+ALTER TABLE "version_support" ADD CONSTRAINT "version_support_fk_architecture_id" FOREIGN KEY ("architecture_id")
+  REFERENCES "architecture" ("architecture_id") DEFERRABLE;
+
+;
+ALTER TABLE "version_support" ADD CONSTRAINT "version_support_fk_support_level_id" FOREIGN KEY ("support_level_id")
+  REFERENCES "support_level" ("support_level_id") DEFERRABLE;
+
+;
+ALTER TABLE "version_support" ADD CONSTRAINT "version_support_fk_sync_id" FOREIGN KEY ("sync_id")
+  REFERENCES "sync" ("sync_id") DEFERRABLE;
+
+;
+ALTER TABLE "version_support" ADD CONSTRAINT "version_support_fk_version_id" FOREIGN KEY ("version_id")
   REFERENCES "version" ("version_id") DEFERRABLE;
 
 ;

@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::SQLite
--- Created on Thu Oct 12 10:31:27 2017
+-- Created on Thu Oct 12 10:44:59 2017
 -- 
 
 ;
@@ -146,22 +146,6 @@ CREATE INDEX version_idx_package_id_category_id ON version (package_id, category
 CREATE INDEX version_idx_sync_id ON version (sync_id);
 CREATE UNIQUE INDEX version_category_id_package_id_version_string ON version (category_id, package_id, version_string);
 --
--- Table: version_support
---
-CREATE TABLE version_support (
-  version_support_id INTEGER PRIMARY KEY NOT NULL,
-  architecture_id integer NOT NULL,
-  support_level_id integer NOT NULL,
-  sync_id integer,
-  FOREIGN KEY (architecture_id) REFERENCES architecture(architecture_id),
-  FOREIGN KEY (support_level_id) REFERENCES support_level(support_level_id),
-  FOREIGN KEY (sync_id) REFERENCES sync(sync_id)
-);
-CREATE INDEX version_support_idx_architecture_id ON version_support (architecture_id);
-CREATE INDEX version_support_idx_support_level_id ON version_support (support_level_id);
-CREATE INDEX version_support_idx_sync_id ON version_support (sync_id);
-CREATE UNIQUE INDEX version_support_architecture_id_support_level_id ON version_support (architecture_id, support_level_id);
---
 -- Table: mask_impact
 --
 CREATE TABLE mask_impact (
@@ -207,4 +191,23 @@ CREATE TABLE note_applies (
 CREATE INDEX note_applies_idx_note_id ON note_applies (note_id);
 CREATE INDEX note_applies_idx_sync_id ON note_applies (sync_id);
 CREATE INDEX note_applies_idx_version_id ON note_applies (version_id);
+--
+-- Table: version_support
+--
+CREATE TABLE version_support (
+  version_support_id INTEGER PRIMARY KEY NOT NULL,
+  architecture_id integer NOT NULL,
+  support_level_id integer NOT NULL,
+  version_id integer NOT NULL,
+  sync_id integer,
+  FOREIGN KEY (architecture_id) REFERENCES architecture(architecture_id),
+  FOREIGN KEY (support_level_id) REFERENCES support_level(support_level_id),
+  FOREIGN KEY (sync_id) REFERENCES sync(sync_id),
+  FOREIGN KEY (version_id) REFERENCES version(version_id)
+);
+CREATE INDEX version_support_idx_architecture_id ON version_support (architecture_id);
+CREATE INDEX version_support_idx_support_level_id ON version_support (support_level_id);
+CREATE INDEX version_support_idx_sync_id ON version_support (sync_id);
+CREATE INDEX version_support_idx_version_id ON version_support (version_id);
+CREATE UNIQUE INDEX version_support_architecture_id_support_level_id ON version_support (architecture_id, support_level_id);
 COMMIT;

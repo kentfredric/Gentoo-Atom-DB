@@ -275,6 +275,12 @@ BEGIN {    # VersionSupport
             is_numeric     => 1,
             is_foreign_key => 1,
         },
+        'version_id'       => {
+            data_type      => 'integer',
+            is_nullable    => 0,
+            is_numeric     => 1,
+            is_foreign_key => 1,
+        },
     );
     __PACKAGE__->set_primary_key('version_support_id');
     __PACKAGE__->add_unique_constraint(
@@ -292,6 +298,13 @@ BEGIN {    # VersionSupport
             'foreign.support_level_id' => 'self.support_level_id'
         },
     );
+    __PACKAGE__->belongs_to(
+        'version' => 'Gentoo::Atom::DB::Schema::Result::Version',
+        {
+            'foreign.version_id' => 'self.version_id'
+        },
+    );
+
     $is_sync->(__PACKAGE__);
 }
 

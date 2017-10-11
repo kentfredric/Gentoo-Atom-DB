@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Thu Oct 12 10:31:28 2017
+-- Created on Thu Oct 12 10:45:00 2017
 -- 
 ;
 SET foreign_key_checks=0;
@@ -156,23 +156,6 @@ CREATE TABLE `version` (
   CONSTRAINT `version_fk_sync_id` FOREIGN KEY (`sync_id`) REFERENCES `sync` (`sync_id`)
 ) ENGINE=InnoDB;
 --
--- Table: `version_support`
---
-CREATE TABLE `version_support` (
-  `version_support_id` integer NOT NULL auto_increment,
-  `architecture_id` integer NOT NULL,
-  `support_level_id` integer NOT NULL,
-  `sync_id` integer NULL,
-  INDEX `version_support_idx_architecture_id` (`architecture_id`),
-  INDEX `version_support_idx_support_level_id` (`support_level_id`),
-  INDEX `version_support_idx_sync_id` (`sync_id`),
-  PRIMARY KEY (`version_support_id`),
-  UNIQUE `version_support_architecture_id_support_level_id` (`architecture_id`, `support_level_id`),
-  CONSTRAINT `version_support_fk_architecture_id` FOREIGN KEY (`architecture_id`) REFERENCES `architecture` (`architecture_id`),
-  CONSTRAINT `version_support_fk_support_level_id` FOREIGN KEY (`support_level_id`) REFERENCES `support_level` (`support_level_id`),
-  CONSTRAINT `version_support_fk_sync_id` FOREIGN KEY (`sync_id`) REFERENCES `sync` (`sync_id`)
-) ENGINE=InnoDB;
---
 -- Table: `mask_impact`
 --
 CREATE TABLE `mask_impact` (
@@ -220,5 +203,25 @@ CREATE TABLE `note_applies` (
   CONSTRAINT `note_applies_fk_note_id` FOREIGN KEY (`note_id`) REFERENCES `note` (`note_id`),
   CONSTRAINT `note_applies_fk_sync_id` FOREIGN KEY (`sync_id`) REFERENCES `sync` (`sync_id`),
   CONSTRAINT `note_applies_fk_version_id` FOREIGN KEY (`version_id`) REFERENCES `version` (`version_id`)
+) ENGINE=InnoDB;
+--
+-- Table: `version_support`
+--
+CREATE TABLE `version_support` (
+  `version_support_id` integer NOT NULL auto_increment,
+  `architecture_id` integer NOT NULL,
+  `support_level_id` integer NOT NULL,
+  `version_id` integer NOT NULL,
+  `sync_id` integer NULL,
+  INDEX `version_support_idx_architecture_id` (`architecture_id`),
+  INDEX `version_support_idx_support_level_id` (`support_level_id`),
+  INDEX `version_support_idx_sync_id` (`sync_id`),
+  INDEX `version_support_idx_version_id` (`version_id`),
+  PRIMARY KEY (`version_support_id`),
+  UNIQUE `version_support_architecture_id_support_level_id` (`architecture_id`, `support_level_id`),
+  CONSTRAINT `version_support_fk_architecture_id` FOREIGN KEY (`architecture_id`) REFERENCES `architecture` (`architecture_id`),
+  CONSTRAINT `version_support_fk_support_level_id` FOREIGN KEY (`support_level_id`) REFERENCES `support_level` (`support_level_id`),
+  CONSTRAINT `version_support_fk_sync_id` FOREIGN KEY (`sync_id`) REFERENCES `sync` (`sync_id`),
+  CONSTRAINT `version_support_fk_version_id` FOREIGN KEY (`version_id`) REFERENCES `version` (`version_id`)
 ) ENGINE=InnoDB;
 SET foreign_key_checks=1;
