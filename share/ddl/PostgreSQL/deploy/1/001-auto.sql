@@ -1,7 +1,18 @@
 -- 
 -- Created by SQL::Translator::Producer::PostgreSQL
--- Created on Thu Oct 12 10:46:40 2017
+-- Created on Thu Oct 12 10:48:45 2017
 -- 
+;
+--
+-- Table: note_kind
+--
+CREATE TABLE "note_kind" (
+  "note_kind_id" serial NOT NULL,
+  "note_kind_name" text NOT NULL,
+  PRIMARY KEY ("note_kind_id"),
+  CONSTRAINT "note_kind_note_kind_name" UNIQUE ("note_kind_name")
+);
+
 ;
 --
 -- Table: support_level
@@ -23,6 +34,17 @@ CREATE TABLE "sync" (
   "sync_stop" text,
   PRIMARY KEY ("sync_id"),
   CONSTRAINT "sync_sync_start" UNIQUE ("sync_start")
+);
+
+;
+--
+-- Table: trait
+--
+CREATE TABLE "trait" (
+  "trait_id" serial NOT NULL,
+  "trait_name" text NOT NULL,
+  PRIMARY KEY ("trait_id"),
+  CONSTRAINT "trait_trait_name" UNIQUE ("trait_name")
 );
 
 ;
@@ -67,32 +89,6 @@ CREATE TABLE "mask" (
   CONSTRAINT "mask_mask_content_checksum" UNIQUE ("mask_content_checksum")
 );
 CREATE INDEX "mask_idx_sync_id" on "mask" ("sync_id");
-
-;
---
--- Table: note_kind
---
-CREATE TABLE "note_kind" (
-  "note_kind_id" serial NOT NULL,
-  "note_kind_name" text NOT NULL,
-  "sync_id" integer,
-  PRIMARY KEY ("note_kind_id"),
-  CONSTRAINT "note_kind_note_kind_name" UNIQUE ("note_kind_name")
-);
-CREATE INDEX "note_kind_idx_sync_id" on "note_kind" ("sync_id");
-
-;
---
--- Table: trait
---
-CREATE TABLE "trait" (
-  "trait_id" serial NOT NULL,
-  "trait_name" text NOT NULL,
-  "sync_id" integer,
-  PRIMARY KEY ("trait_id"),
-  CONSTRAINT "trait_trait_name" UNIQUE ("trait_name")
-);
-CREATE INDEX "trait_idx_sync_id" on "trait" ("sync_id");
 
 ;
 --
@@ -236,14 +232,6 @@ ALTER TABLE "category" ADD CONSTRAINT "category_fk_sync_id" FOREIGN KEY ("sync_i
 
 ;
 ALTER TABLE "mask" ADD CONSTRAINT "mask_fk_sync_id" FOREIGN KEY ("sync_id")
-  REFERENCES "sync" ("sync_id") DEFERRABLE;
-
-;
-ALTER TABLE "note_kind" ADD CONSTRAINT "note_kind_fk_sync_id" FOREIGN KEY ("sync_id")
-  REFERENCES "sync" ("sync_id") DEFERRABLE;
-
-;
-ALTER TABLE "trait" ADD CONSTRAINT "trait_fk_sync_id" FOREIGN KEY ("sync_id")
   REFERENCES "sync" ("sync_id") DEFERRABLE;
 
 ;

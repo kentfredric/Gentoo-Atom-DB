@@ -81,7 +81,7 @@ schema:
           type: NORMAL
       name: architecture
       options: []
-      order: 3
+      order: 5
     category:
       constraints:
         - deferrable: 1
@@ -161,7 +161,7 @@ schema:
           type: NORMAL
       name: category
       options: []
-      order: 4
+      order: 6
     mask:
       constraints:
         - deferrable: 1
@@ -281,7 +281,7 @@ schema:
           type: NORMAL
       name: mask
       options: []
-      order: 5
+      order: 7
     mask_impact:
       constraints:
         - deferrable: 1
@@ -645,19 +645,6 @@ schema:
           reference_fields: []
           reference_table: ''
           type: UNIQUE
-        - deferrable: 1
-          expression: ''
-          fields:
-            - sync_id
-          match_type: ''
-          name: note_kind_fk_sync_id
-          on_delete: ''
-          on_update: ''
-          options: []
-          reference_fields:
-            - sync_id
-          reference_table: sync
-          type: FOREIGN KEY
       fields:
         note_kind_id:
           data_type: integer
@@ -680,25 +667,10 @@ schema:
           order: 2
           size:
             - 0
-        sync_id:
-          data_type: integer
-          default_value: ~
-          is_nullable: 1
-          is_primary_key: 0
-          is_unique: 0
-          name: sync_id
-          order: 3
-          size:
-            - 0
-      indices:
-        - fields:
-            - sync_id
-          name: note_kind_idx_sync_id
-          options: []
-          type: NORMAL
+      indices: []
       name: note_kind
       options: []
-      order: 6
+      order: 1
     package:
       constraints:
         - deferrable: 1
@@ -995,7 +967,7 @@ schema:
       indices: []
       name: support_level
       options: []
-      order: 1
+      order: 2
     sync:
       constraints:
         - deferrable: 1
@@ -1057,7 +1029,7 @@ schema:
       indices: []
       name: sync
       options: []
-      order: 2
+      order: 3
     trait:
       constraints:
         - deferrable: 1
@@ -1084,30 +1056,7 @@ schema:
           reference_fields: []
           reference_table: ''
           type: UNIQUE
-        - deferrable: 1
-          expression: ''
-          fields:
-            - sync_id
-          match_type: ''
-          name: trait_fk_sync_id
-          on_delete: ''
-          on_update: ''
-          options: []
-          reference_fields:
-            - sync_id
-          reference_table: sync
-          type: FOREIGN KEY
       fields:
-        sync_id:
-          data_type: integer
-          default_value: ~
-          is_nullable: 1
-          is_primary_key: 0
-          is_unique: 0
-          name: sync_id
-          order: 3
-          size:
-            - 0
         trait_id:
           data_type: integer
           default_value: ~
@@ -1129,15 +1078,10 @@ schema:
           order: 2
           size:
             - 0
-      indices:
-        - fields:
-            - sync_id
-          name: trait_idx_sync_id
-          options: []
-          type: NORMAL
+      indices: []
       name: trait
       options: []
-      order: 7
+      order: 4
     trait_applies:
       constraints:
         - deferrable: 1

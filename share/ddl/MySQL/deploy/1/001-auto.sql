@@ -1,9 +1,18 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Thu Oct 12 10:46:40 2017
+-- Created on Thu Oct 12 10:48:46 2017
 -- 
 ;
 SET foreign_key_checks=0;
+--
+-- Table: `note_kind`
+--
+CREATE TABLE `note_kind` (
+  `note_kind_id` integer NOT NULL auto_increment,
+  `note_kind_name` text NOT NULL,
+  PRIMARY KEY (`note_kind_id`),
+  UNIQUE `note_kind_note_kind_name` (`note_kind_name`)
+) ENGINE=InnoDB;
 --
 -- Table: `support_level`
 --
@@ -22,6 +31,15 @@ CREATE TABLE `sync` (
   `sync_stop` text NULL,
   PRIMARY KEY (`sync_id`),
   UNIQUE `sync_sync_start` (`sync_start`)
+) ENGINE=InnoDB;
+--
+-- Table: `trait`
+--
+CREATE TABLE `trait` (
+  `trait_id` integer NOT NULL auto_increment,
+  `trait_name` text NOT NULL,
+  PRIMARY KEY (`trait_id`),
+  UNIQUE `trait_trait_name` (`trait_name`)
 ) ENGINE=InnoDB;
 --
 -- Table: `architecture`
@@ -62,30 +80,6 @@ CREATE TABLE `mask` (
   PRIMARY KEY (`mask_id`),
   UNIQUE `mask_mask_content_checksum` (`mask_content_checksum`),
   CONSTRAINT `mask_fk_sync_id` FOREIGN KEY (`sync_id`) REFERENCES `sync` (`sync_id`)
-) ENGINE=InnoDB;
---
--- Table: `note_kind`
---
-CREATE TABLE `note_kind` (
-  `note_kind_id` integer NOT NULL auto_increment,
-  `note_kind_name` text NOT NULL,
-  `sync_id` integer NULL,
-  INDEX `note_kind_idx_sync_id` (`sync_id`),
-  PRIMARY KEY (`note_kind_id`),
-  UNIQUE `note_kind_note_kind_name` (`note_kind_name`),
-  CONSTRAINT `note_kind_fk_sync_id` FOREIGN KEY (`sync_id`) REFERENCES `sync` (`sync_id`)
-) ENGINE=InnoDB;
---
--- Table: `trait`
---
-CREATE TABLE `trait` (
-  `trait_id` integer NOT NULL auto_increment,
-  `trait_name` text NOT NULL,
-  `sync_id` integer NULL,
-  INDEX `trait_idx_sync_id` (`sync_id`),
-  PRIMARY KEY (`trait_id`),
-  UNIQUE `trait_trait_name` (`trait_name`),
-  CONSTRAINT `trait_fk_sync_id` FOREIGN KEY (`sync_id`) REFERENCES `sync` (`sync_id`)
 ) ENGINE=InnoDB;
 --
 -- Table: `note`

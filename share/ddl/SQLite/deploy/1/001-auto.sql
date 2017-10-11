@@ -1,10 +1,18 @@
 -- 
 -- Created by SQL::Translator::Producer::SQLite
--- Created on Thu Oct 12 10:46:39 2017
+-- Created on Thu Oct 12 10:48:45 2017
 -- 
 
 ;
 BEGIN TRANSACTION;
+--
+-- Table: note_kind
+--
+CREATE TABLE note_kind (
+  note_kind_id INTEGER PRIMARY KEY NOT NULL,
+  note_kind_name text NOT NULL
+);
+CREATE UNIQUE INDEX note_kind_note_kind_name ON note_kind (note_kind_name);
 --
 -- Table: support_level
 --
@@ -22,6 +30,14 @@ CREATE TABLE sync (
   sync_stop text
 );
 CREATE UNIQUE INDEX sync_sync_start ON sync (sync_start);
+--
+-- Table: trait
+--
+CREATE TABLE trait (
+  trait_id INTEGER PRIMARY KEY NOT NULL,
+  trait_name text NOT NULL
+);
+CREATE UNIQUE INDEX trait_trait_name ON trait (trait_name);
 --
 -- Table: architecture
 --
@@ -59,28 +75,6 @@ CREATE TABLE mask (
 );
 CREATE INDEX mask_idx_sync_id ON mask (sync_id);
 CREATE UNIQUE INDEX mask_mask_content_checksum ON mask (mask_content_checksum);
---
--- Table: note_kind
---
-CREATE TABLE note_kind (
-  note_kind_id INTEGER PRIMARY KEY NOT NULL,
-  note_kind_name text NOT NULL,
-  sync_id integer,
-  FOREIGN KEY (sync_id) REFERENCES sync(sync_id)
-);
-CREATE INDEX note_kind_idx_sync_id ON note_kind (sync_id);
-CREATE UNIQUE INDEX note_kind_note_kind_name ON note_kind (note_kind_name);
---
--- Table: trait
---
-CREATE TABLE trait (
-  trait_id INTEGER PRIMARY KEY NOT NULL,
-  trait_name text NOT NULL,
-  sync_id integer,
-  FOREIGN KEY (sync_id) REFERENCES sync(sync_id)
-);
-CREATE INDEX trait_idx_sync_id ON trait (sync_id);
-CREATE UNIQUE INDEX trait_trait_name ON trait (trait_name);
 --
 -- Table: note
 --

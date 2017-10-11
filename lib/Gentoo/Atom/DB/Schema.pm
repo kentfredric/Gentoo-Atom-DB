@@ -273,7 +273,7 @@ BEGIN {    # VersionSupport
             is_numeric     => 1,
             is_foreign_key => 1,
         },
-        'version_id'       => {
+        'version_id' => {
             data_type      => 'integer',
             is_nullable    => 0,
             is_numeric     => 1,
@@ -459,7 +459,6 @@ BEGIN {    # Trait
     );
     __PACKAGE__->set_primary_key('trait_id');
     __PACKAGE__->add_unique_constraint( ['trait_name'] );
-    $is_sync->(__PACKAGE__);
 }
 
 BEGIN {    # NoteKind
@@ -482,7 +481,6 @@ BEGIN {    # NoteKind
     );
     __PACKAGE__->set_primary_key('note_kind_id');
     __PACKAGE__->add_unique_constraint( ['note_kind_name'] );
-    $is_sync->(__PACKAGE__);
 }
 
 BEGIN {    # Note
