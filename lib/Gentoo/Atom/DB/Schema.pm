@@ -11,7 +11,14 @@ use DBIx::Class::Schema ();
 
 our @ISA = ('DBIx::Class::Schema');
 
-for my $class (qw( Category Package Version )) {
+sub schema_version { 1 }
+
+for my $class (
+    qw( Category Package Version SupportLevel Architecture VersionSupport Profile Mask
+    MaskImpact Trait NoteKind Note TraitApplies NoteApplies
+    )
+  )
+{
     my $comp_class = "Gentoo::Atom::DB::Schema::Result::$class";
     __PACKAGE__->register_class(
         ( $comp_class->can('source_name') && $comp_class->source_name )
