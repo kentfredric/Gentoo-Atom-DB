@@ -81,7 +81,7 @@ schema:
           type: NORMAL
       name: architecture
       options: []
-      order: 2
+      order: 3
     category:
       constraints:
         - deferrable: 1
@@ -161,7 +161,7 @@ schema:
           type: NORMAL
       name: category
       options: []
-      order: 3
+      order: 4
     mask:
       constraints:
         - deferrable: 1
@@ -281,7 +281,7 @@ schema:
           type: NORMAL
       name: mask
       options: []
-      order: 4
+      order: 5
     mask_impact:
       constraints:
         - deferrable: 1
@@ -698,7 +698,7 @@ schema:
           type: NORMAL
       name: note_kind
       options: []
-      order: 5
+      order: 6
     package:
       constraints:
         - deferrable: 1
@@ -970,19 +970,6 @@ schema:
           reference_fields: []
           reference_table: ''
           type: UNIQUE
-        - deferrable: 1
-          expression: ''
-          fields:
-            - sync_id
-          match_type: ''
-          name: support_level_fk_sync_id
-          on_delete: ''
-          on_update: ''
-          options: []
-          reference_fields:
-            - sync_id
-          reference_table: sync
-          type: FOREIGN KEY
       fields:
         support_level_id:
           data_type: integer
@@ -1005,25 +992,10 @@ schema:
           order: 2
           size:
             - 0
-        sync_id:
-          data_type: integer
-          default_value: ~
-          is_nullable: 1
-          is_primary_key: 0
-          is_unique: 0
-          name: sync_id
-          order: 3
-          size:
-            - 0
-      indices:
-        - fields:
-            - sync_id
-          name: support_level_idx_sync_id
-          options: []
-          type: NORMAL
+      indices: []
       name: support_level
       options: []
-      order: 6
+      order: 1
     sync:
       constraints:
         - deferrable: 1
@@ -1085,7 +1057,7 @@ schema:
       indices: []
       name: sync
       options: []
-      order: 1
+      order: 2
     trait:
       constraints:
         - deferrable: 1

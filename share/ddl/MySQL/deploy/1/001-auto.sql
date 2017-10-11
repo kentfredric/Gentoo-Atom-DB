@@ -1,9 +1,18 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Thu Oct 12 10:45:00 2017
+-- Created on Thu Oct 12 10:46:40 2017
 -- 
 ;
 SET foreign_key_checks=0;
+--
+-- Table: `support_level`
+--
+CREATE TABLE `support_level` (
+  `support_level_id` integer NOT NULL auto_increment,
+  `support_level_name` text NOT NULL,
+  PRIMARY KEY (`support_level_id`),
+  UNIQUE `support_level_support_level_name` (`support_level_name`)
+) ENGINE=InnoDB;
 --
 -- Table: `sync`
 --
@@ -65,18 +74,6 @@ CREATE TABLE `note_kind` (
   PRIMARY KEY (`note_kind_id`),
   UNIQUE `note_kind_note_kind_name` (`note_kind_name`),
   CONSTRAINT `note_kind_fk_sync_id` FOREIGN KEY (`sync_id`) REFERENCES `sync` (`sync_id`)
-) ENGINE=InnoDB;
---
--- Table: `support_level`
---
-CREATE TABLE `support_level` (
-  `support_level_id` integer NOT NULL auto_increment,
-  `support_level_name` text NOT NULL,
-  `sync_id` integer NULL,
-  INDEX `support_level_idx_sync_id` (`sync_id`),
-  PRIMARY KEY (`support_level_id`),
-  UNIQUE `support_level_support_level_name` (`support_level_name`),
-  CONSTRAINT `support_level_fk_sync_id` FOREIGN KEY (`sync_id`) REFERENCES `sync` (`sync_id`)
 ) ENGINE=InnoDB;
 --
 -- Table: `trait`

@@ -1,10 +1,18 @@
 -- 
 -- Created by SQL::Translator::Producer::SQLite
--- Created on Thu Oct 12 10:44:59 2017
+-- Created on Thu Oct 12 10:46:39 2017
 -- 
 
 ;
 BEGIN TRANSACTION;
+--
+-- Table: support_level
+--
+CREATE TABLE support_level (
+  support_level_id INTEGER PRIMARY KEY NOT NULL,
+  support_level_name text NOT NULL
+);
+CREATE UNIQUE INDEX support_level_support_level_name ON support_level (support_level_name);
 --
 -- Table: sync
 --
@@ -62,17 +70,6 @@ CREATE TABLE note_kind (
 );
 CREATE INDEX note_kind_idx_sync_id ON note_kind (sync_id);
 CREATE UNIQUE INDEX note_kind_note_kind_name ON note_kind (note_kind_name);
---
--- Table: support_level
---
-CREATE TABLE support_level (
-  support_level_id INTEGER PRIMARY KEY NOT NULL,
-  support_level_name text NOT NULL,
-  sync_id integer,
-  FOREIGN KEY (sync_id) REFERENCES sync(sync_id)
-);
-CREATE INDEX support_level_idx_sync_id ON support_level (sync_id);
-CREATE UNIQUE INDEX support_level_support_level_name ON support_level (support_level_name);
 --
 -- Table: trait
 --

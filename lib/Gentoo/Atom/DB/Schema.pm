@@ -222,8 +222,6 @@ BEGIN {    # SupportLevel
     );
     __PACKAGE__->set_primary_key('support_level_id');
     __PACKAGE__->add_unique_constraint( ['support_level_name'] );
-    $is_sync->(__PACKAGE__);
-
 }
 
 BEGIN {    # Architecture

@@ -1,7 +1,18 @@
 -- 
 -- Created by SQL::Translator::Producer::PostgreSQL
--- Created on Thu Oct 12 10:44:59 2017
+-- Created on Thu Oct 12 10:46:40 2017
 -- 
+;
+--
+-- Table: support_level
+--
+CREATE TABLE "support_level" (
+  "support_level_id" serial NOT NULL,
+  "support_level_name" text NOT NULL,
+  PRIMARY KEY ("support_level_id"),
+  CONSTRAINT "support_level_support_level_name" UNIQUE ("support_level_name")
+);
+
 ;
 --
 -- Table: sync
@@ -69,19 +80,6 @@ CREATE TABLE "note_kind" (
   CONSTRAINT "note_kind_note_kind_name" UNIQUE ("note_kind_name")
 );
 CREATE INDEX "note_kind_idx_sync_id" on "note_kind" ("sync_id");
-
-;
---
--- Table: support_level
---
-CREATE TABLE "support_level" (
-  "support_level_id" serial NOT NULL,
-  "support_level_name" text NOT NULL,
-  "sync_id" integer,
-  PRIMARY KEY ("support_level_id"),
-  CONSTRAINT "support_level_support_level_name" UNIQUE ("support_level_name")
-);
-CREATE INDEX "support_level_idx_sync_id" on "support_level" ("sync_id");
 
 ;
 --
@@ -242,10 +240,6 @@ ALTER TABLE "mask" ADD CONSTRAINT "mask_fk_sync_id" FOREIGN KEY ("sync_id")
 
 ;
 ALTER TABLE "note_kind" ADD CONSTRAINT "note_kind_fk_sync_id" FOREIGN KEY ("sync_id")
-  REFERENCES "sync" ("sync_id") DEFERRABLE;
-
-;
-ALTER TABLE "support_level" ADD CONSTRAINT "support_level_fk_sync_id" FOREIGN KEY ("sync_id")
   REFERENCES "sync" ("sync_id") DEFERRABLE;
 
 ;
