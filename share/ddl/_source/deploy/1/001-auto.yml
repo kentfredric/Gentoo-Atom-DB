@@ -1,0 +1,1124 @@
+---
+schema:
+  procedures: {}
+  tables:
+    architecture:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - architecture_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - architecture_name
+          match_type: ''
+          name: architecture_architecture_name
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+      fields:
+        architecture_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: architecture_id
+          order: 1
+          size:
+            - 0
+        architecture_name:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: architecture_name
+          order: 2
+          size:
+            - 0
+      indices: []
+      name: architecture
+      options: []
+      order: 1
+    category:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - category_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - category_name
+          match_type: ''
+          name: category_category_name
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+      fields:
+        category_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: category_id
+          order: 1
+          size:
+            - 0
+        category_name:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: category_name
+          order: 2
+          size:
+            - 0
+      indices: []
+      name: category
+      options: []
+      order: 2
+    mask:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - mask_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - mask_content_checksum
+          match_type: ''
+          name: mask_mask_content_checksum
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+      fields:
+        mask_atoms:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: mask_atoms
+          order: 6
+          size:
+            - 0
+        mask_author:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: mask_author
+          order: 2
+          size:
+            - 0
+        mask_content:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: mask_content
+          order: 4
+          size:
+            - 0
+        mask_content_checksum:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: mask_content_checksum
+          order: 5
+          size:
+            - 0
+        mask_datestamp:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: mask_datestamp
+          order: 3
+          size:
+            - 0
+        mask_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: mask_id
+          order: 1
+          size:
+            - 0
+      indices: []
+      name: mask
+      options: []
+      order: 3
+    mask_impact:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - mask_impact_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - mask_id
+            - version_id
+          match_type: ''
+          name: mask_impact_mask_id_version_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+        - deferrable: 1
+          expression: ''
+          fields:
+            - mask_id
+          match_type: ''
+          name: mask_impact_fk_mask_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - mask_id
+          reference_table: mask
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - version_id
+          match_type: ''
+          name: mask_impact_fk_version_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - version_id
+          reference_table: version
+          type: FOREIGN KEY
+      fields:
+        mask_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: mask_id
+          order: 2
+          size:
+            - 0
+        mask_impact_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: mask_impact_id
+          order: 1
+          size:
+            - 0
+        version_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: version_id
+          order: 3
+          size:
+            - 0
+      indices:
+        - fields:
+            - mask_id
+          name: mask_impact_idx_mask_id
+          options: []
+          type: NORMAL
+        - fields:
+            - version_id
+          name: mask_impact_idx_version_id
+          options: []
+          type: NORMAL
+      name: mask_impact
+      options: []
+      order: 12
+    note:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - note_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - note_kind_id
+          match_type: ''
+          name: note_fk_note_kind_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - note_kind_id
+          reference_table: note_kind
+          type: FOREIGN KEY
+      fields:
+        note_description:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: note_description
+          order: 3
+          size:
+            - 0
+        note_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: note_id
+          order: 1
+          size:
+            - 0
+        note_kind_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: note_kind_id
+          order: 2
+          size:
+            - 0
+      indices:
+        - fields:
+            - note_kind_id
+          name: note_idx_note_kind_id
+          options: []
+          type: NORMAL
+      name: note
+      options: []
+      order: 7
+    note_applies:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - note_applies_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - note_id
+          match_type: ''
+          name: note_applies_fk_note_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - note_id
+          reference_table: note
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - version_id
+          match_type: ''
+          name: note_applies_fk_version_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - version_id
+          reference_table: version
+          type: FOREIGN KEY
+      fields:
+        note_applies_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: note_applies_id
+          order: 1
+          size:
+            - 0
+        note_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: note_id
+          order: 2
+          size:
+            - 0
+        version_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: version_id
+          order: 3
+          size:
+            - 0
+      indices:
+        - fields:
+            - note_id
+          name: note_applies_idx_note_id
+          options: []
+          type: NORMAL
+        - fields:
+            - version_id
+          name: note_applies_idx_version_id
+          options: []
+          type: NORMAL
+      name: note_applies
+      options: []
+      order: 14
+    note_kind:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - note_kind_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - note_kind_name
+          match_type: ''
+          name: note_kind_note_kind_name
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+      fields:
+        note_kind_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: note_kind_id
+          order: 1
+          size:
+            - 0
+        note_kind_name:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: note_kind_name
+          order: 2
+          size:
+            - 0
+      indices: []
+      name: note_kind
+      options: []
+      order: 4
+    package:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - package_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - category_id
+            - package_name
+          match_type: ''
+          name: package_category_id_package_name
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+        - deferrable: 1
+          expression: ''
+          fields:
+            - category_id
+          match_type: ''
+          name: package_fk_category_id
+          on_delete: CASCADE
+          on_update: CASCADE
+          options: []
+          reference_fields:
+            - category_id
+          reference_table: category
+          type: FOREIGN KEY
+      fields:
+        category_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: category_id
+          order: 3
+          size:
+            - 0
+        package_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: package_id
+          order: 1
+          size:
+            - 0
+        package_name:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: package_name
+          order: 2
+          size:
+            - 0
+      indices:
+        - fields:
+            - category_id
+          name: package_idx_category_id
+          options: []
+          type: NORMAL
+      name: package
+      options: []
+      order: 8
+    profile:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - profile_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - profile_name
+          match_type: ''
+          name: profile_profile_name
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+        - deferrable: 1
+          expression: ''
+          fields:
+            - architecture_id
+          match_type: ''
+          name: profile_fk_architecture_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - architecture_id
+          reference_table: architecture
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - parent_profile_id
+          match_type: ''
+          name: profile_fk_parent_profile_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - profile_id
+          reference_table: profile
+          type: FOREIGN KEY
+      fields:
+        architecture_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: architecture_id
+          order: 3
+          size:
+            - 0
+        parent_profile_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: parent_profile_id
+          order: 4
+          size:
+            - 0
+        profile_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: profile_id
+          order: 1
+          size:
+            - 0
+        profile_name:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: profile_name
+          order: 2
+          size:
+            - 0
+      indices:
+        - fields:
+            - architecture_id
+          name: profile_idx_architecture_id
+          options: []
+          type: NORMAL
+        - fields:
+            - parent_profile_id
+          name: profile_idx_parent_profile_id
+          options: []
+          type: NORMAL
+      name: profile
+      options: []
+      order: 9
+    support_level:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - support_level_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - support_level_name
+          match_type: ''
+          name: support_level_support_level_name
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+      fields:
+        support_level_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: support_level_id
+          order: 1
+          size:
+            - 0
+        support_level_name:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: support_level_name
+          order: 2
+          size:
+            - 0
+      indices: []
+      name: support_level
+      options: []
+      order: 5
+    trait:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - trait_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - trait_name
+          match_type: ''
+          name: trait_trait_name
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+      fields:
+        trait_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: trait_id
+          order: 1
+          size:
+            - 0
+        trait_name:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: trait_name
+          order: 2
+          size:
+            - 0
+      indices: []
+      name: trait
+      options: []
+      order: 6
+    trait_applies:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - trait_applies_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - trait_id
+          match_type: ''
+          name: trait_applies_fk_trait_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - trait_id
+          reference_table: trait
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - version_id
+          match_type: ''
+          name: trait_applies_fk_version_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - version_id
+          reference_table: version
+          type: FOREIGN KEY
+      fields:
+        trait_applies_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: trait_applies_id
+          order: 1
+          size:
+            - 0
+        trait_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: trait_id
+          order: 2
+          size:
+            - 0
+        version_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 0
+          name: version_id
+          order: 3
+          size:
+            - 0
+      indices:
+        - fields:
+            - trait_id
+          name: trait_applies_idx_trait_id
+          options: []
+          type: NORMAL
+        - fields:
+            - version_id
+          name: trait_applies_idx_version_id
+          options: []
+          type: NORMAL
+      name: trait_applies
+      options: []
+      order: 13
+    version:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - version_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - category_id
+            - package_id
+            - version_string
+          match_type: ''
+          name: version_category_id_package_id_version_string
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+        - deferrable: 1
+          expression: ''
+          fields:
+            - category_id
+          match_type: ''
+          name: version_fk_category_id
+          on_delete: CASCADE
+          on_update: CASCADE
+          options: []
+          reference_fields:
+            - category_id
+          reference_table: category
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - package_id
+            - category_id
+          match_type: ''
+          name: version_fk_package_id_category_id
+          on_delete: CASCADE
+          on_update: CASCADE
+          options: []
+          reference_fields:
+            - package_id
+            - category_id
+          reference_table: package
+          type: FOREIGN KEY
+      fields:
+        category_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: category_id
+          order: 3
+          size:
+            - 0
+        package_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: package_id
+          order: 4
+          size:
+            - 0
+        version_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: version_id
+          order: 1
+          size:
+            - 0
+        version_string:
+          data_type: text
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: version_string
+          order: 2
+          size:
+            - 0
+      indices:
+        - fields:
+            - category_id
+          name: version_idx_category_id
+          options: []
+          type: NORMAL
+        - fields:
+            - package_id
+            - category_id
+          name: version_idx_package_id_category_id
+          options: []
+          type: NORMAL
+      name: version
+      options: []
+      order: 10
+    version_support:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - version_support_id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - architecture_id
+            - support_level_id
+          match_type: ''
+          name: version_support_architecture_id_support_level_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+        - deferrable: 1
+          expression: ''
+          fields:
+            - architecture_id
+          match_type: ''
+          name: version_support_fk_architecture_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - architecture_id
+          reference_table: architecture
+          type: FOREIGN KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - support_level_id
+          match_type: ''
+          name: version_support_fk_support_level_id
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields:
+            - support_level_id
+          reference_table: support_level
+          type: FOREIGN KEY
+      fields:
+        architecture_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: architecture_id
+          order: 2
+          size:
+            - 0
+        support_level_id:
+          data_type: integer
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: support_level_id
+          order: 3
+          size:
+            - 0
+        version_support_id:
+          data_type: integer
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: version_support_id
+          order: 1
+          size:
+            - 0
+      indices:
+        - fields:
+            - architecture_id
+          name: version_support_idx_architecture_id
+          options: []
+          type: NORMAL
+        - fields:
+            - support_level_id
+          name: version_support_idx_support_level_id
+          options: []
+          type: NORMAL
+      name: version_support
+      options: []
+      order: 11
+  triggers: {}
+  views: {}
+translator:
+  add_drop_table: 0
+  filename: ~
+  no_comments: 0
+  parser_args:
+    sources:
+      - Architecture
+      - Category
+      - Mask
+      - MaskImpact
+      - Note
+      - NoteApplies
+      - NoteKind
+      - Package
+      - Profile
+      - SupportLevel
+      - Trait
+      - TraitApplies
+      - Version
+      - VersionSupport
+  parser_type: SQL::Translator::Parser::DBIx::Class
+  producer_args: {}
+  producer_type: SQL::Translator::Producer::YAML
+  show_warnings: 0
+  trace: 0
+  version: 0.11021
