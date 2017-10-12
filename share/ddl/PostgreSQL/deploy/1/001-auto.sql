@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::PostgreSQL
--- Created on Thu Oct 12 10:48:45 2017
+-- Created on Thu Oct 12 10:53:04 2017
 -- 
 ;
 --
@@ -98,11 +98,9 @@ CREATE TABLE "note" (
   "note_id" serial NOT NULL,
   "note_kind_id" integer NOT NULL,
   "note_description" text NOT NULL,
-  "sync_id" integer,
   PRIMARY KEY ("note_id")
 );
 CREATE INDEX "note_idx_note_kind_id" on "note" ("note_kind_id");
-CREATE INDEX "note_idx_sync_id" on "note" ("sync_id");
 
 ;
 --
@@ -192,11 +190,9 @@ CREATE TABLE "note_applies" (
   "note_applies_id" serial NOT NULL,
   "note_id" integer NOT NULL,
   "version_id" integer NOT NULL,
-  "sync_id" integer,
   PRIMARY KEY ("note_applies_id")
 );
 CREATE INDEX "note_applies_idx_note_id" on "note_applies" ("note_id");
-CREATE INDEX "note_applies_idx_sync_id" on "note_applies" ("sync_id");
 CREATE INDEX "note_applies_idx_version_id" on "note_applies" ("version_id");
 
 ;
@@ -237,10 +233,6 @@ ALTER TABLE "mask" ADD CONSTRAINT "mask_fk_sync_id" FOREIGN KEY ("sync_id")
 ;
 ALTER TABLE "note" ADD CONSTRAINT "note_fk_note_kind_id" FOREIGN KEY ("note_kind_id")
   REFERENCES "note_kind" ("note_kind_id") DEFERRABLE;
-
-;
-ALTER TABLE "note" ADD CONSTRAINT "note_fk_sync_id" FOREIGN KEY ("sync_id")
-  REFERENCES "sync" ("sync_id") DEFERRABLE;
 
 ;
 ALTER TABLE "package" ADD CONSTRAINT "package_fk_category_id" FOREIGN KEY ("category_id")
@@ -301,10 +293,6 @@ ALTER TABLE "trait_applies" ADD CONSTRAINT "trait_applies_fk_version_id" FOREIGN
 ;
 ALTER TABLE "note_applies" ADD CONSTRAINT "note_applies_fk_note_id" FOREIGN KEY ("note_id")
   REFERENCES "note" ("note_id") DEFERRABLE;
-
-;
-ALTER TABLE "note_applies" ADD CONSTRAINT "note_applies_fk_sync_id" FOREIGN KEY ("sync_id")
-  REFERENCES "sync" ("sync_id") DEFERRABLE;
 
 ;
 ALTER TABLE "note_applies" ADD CONSTRAINT "note_applies_fk_version_id" FOREIGN KEY ("version_id")

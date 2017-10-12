@@ -513,7 +513,6 @@ BEGIN {    # Note
             'foreign.note_kind_id' => 'self.note_kind_id',
         }
     );
-    $is_sync->(__PACKAGE__);
 }
 
 BEGIN {    # TraitApplies
@@ -593,7 +592,6 @@ BEGIN {    # NoteApplies
             'foreign.version_id' => 'self.version_id',
         },
     );
-    $is_sync->(__PACKAGE__);
 }
 1;
 

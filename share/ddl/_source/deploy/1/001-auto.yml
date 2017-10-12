@@ -436,19 +436,6 @@ schema:
             - note_kind_id
           reference_table: note_kind
           type: FOREIGN KEY
-        - deferrable: 1
-          expression: ''
-          fields:
-            - sync_id
-          match_type: ''
-          name: note_fk_sync_id
-          on_delete: ''
-          on_update: ''
-          options: []
-          reference_fields:
-            - sync_id
-          reference_table: sync
-          type: FOREIGN KEY
       fields:
         note_description:
           data_type: text
@@ -481,25 +468,10 @@ schema:
           order: 2
           size:
             - 0
-        sync_id:
-          data_type: integer
-          default_value: ~
-          is_nullable: 1
-          is_primary_key: 0
-          is_unique: 0
-          name: sync_id
-          order: 4
-          size:
-            - 0
       indices:
         - fields:
             - note_kind_id
           name: note_idx_note_kind_id
-          options: []
-          type: NORMAL
-        - fields:
-            - sync_id
-          name: note_idx_sync_id
           options: []
           type: NORMAL
       name: note
@@ -531,19 +503,6 @@ schema:
           reference_fields:
             - note_id
           reference_table: note
-          type: FOREIGN KEY
-        - deferrable: 1
-          expression: ''
-          fields:
-            - sync_id
-          match_type: ''
-          name: note_applies_fk_sync_id
-          on_delete: ''
-          on_update: ''
-          options: []
-          reference_fields:
-            - sync_id
-          reference_table: sync
           type: FOREIGN KEY
         - deferrable: 1
           expression: ''
@@ -580,16 +539,6 @@ schema:
           order: 2
           size:
             - 0
-        sync_id:
-          data_type: integer
-          default_value: ~
-          is_nullable: 1
-          is_primary_key: 0
-          is_unique: 0
-          name: sync_id
-          order: 4
-          size:
-            - 0
         version_id:
           data_type: integer
           default_value: ~
@@ -604,11 +553,6 @@ schema:
         - fields:
             - note_id
           name: note_applies_idx_note_id
-          options: []
-          type: NORMAL
-        - fields:
-            - sync_id
-          name: note_applies_idx_sync_id
           options: []
           type: NORMAL
         - fields:

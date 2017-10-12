@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Thu Oct 12 10:48:46 2017
+-- Created on Thu Oct 12 10:53:04 2017
 -- 
 ;
 SET foreign_key_checks=0;
@@ -88,12 +88,9 @@ CREATE TABLE `note` (
   `note_id` integer NOT NULL auto_increment,
   `note_kind_id` integer NOT NULL,
   `note_description` text NOT NULL,
-  `sync_id` integer NULL,
   INDEX `note_idx_note_kind_id` (`note_kind_id`),
-  INDEX `note_idx_sync_id` (`sync_id`),
   PRIMARY KEY (`note_id`),
-  CONSTRAINT `note_fk_note_kind_id` FOREIGN KEY (`note_kind_id`) REFERENCES `note_kind` (`note_kind_id`),
-  CONSTRAINT `note_fk_sync_id` FOREIGN KEY (`sync_id`) REFERENCES `sync` (`sync_id`)
+  CONSTRAINT `note_fk_note_kind_id` FOREIGN KEY (`note_kind_id`) REFERENCES `note_kind` (`note_kind_id`)
 ) ENGINE=InnoDB;
 --
 -- Table: `package`
@@ -186,13 +183,10 @@ CREATE TABLE `note_applies` (
   `note_applies_id` integer NOT NULL auto_increment,
   `note_id` integer NOT NULL,
   `version_id` integer NOT NULL,
-  `sync_id` integer NULL,
   INDEX `note_applies_idx_note_id` (`note_id`),
-  INDEX `note_applies_idx_sync_id` (`sync_id`),
   INDEX `note_applies_idx_version_id` (`version_id`),
   PRIMARY KEY (`note_applies_id`),
   CONSTRAINT `note_applies_fk_note_id` FOREIGN KEY (`note_id`) REFERENCES `note` (`note_id`),
-  CONSTRAINT `note_applies_fk_sync_id` FOREIGN KEY (`sync_id`) REFERENCES `sync` (`sync_id`),
   CONSTRAINT `note_applies_fk_version_id` FOREIGN KEY (`version_id`) REFERENCES `version` (`version_id`)
 ) ENGINE=InnoDB;
 --

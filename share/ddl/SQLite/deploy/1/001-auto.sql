@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::SQLite
--- Created on Thu Oct 12 10:48:45 2017
+-- Created on Thu Oct 12 10:53:03 2017
 -- 
 
 ;
@@ -82,12 +82,9 @@ CREATE TABLE note (
   note_id INTEGER PRIMARY KEY NOT NULL,
   note_kind_id integer NOT NULL,
   note_description text NOT NULL,
-  sync_id integer,
-  FOREIGN KEY (note_kind_id) REFERENCES note_kind(note_kind_id),
-  FOREIGN KEY (sync_id) REFERENCES sync(sync_id)
+  FOREIGN KEY (note_kind_id) REFERENCES note_kind(note_kind_id)
 );
 CREATE INDEX note_idx_note_kind_id ON note (note_kind_id);
-CREATE INDEX note_idx_sync_id ON note (sync_id);
 --
 -- Table: package
 --
@@ -174,13 +171,10 @@ CREATE TABLE note_applies (
   note_applies_id INTEGER PRIMARY KEY NOT NULL,
   note_id integer NOT NULL,
   version_id integer NOT NULL,
-  sync_id integer,
   FOREIGN KEY (note_id) REFERENCES note(note_id),
-  FOREIGN KEY (sync_id) REFERENCES sync(sync_id),
   FOREIGN KEY (version_id) REFERENCES version(version_id)
 );
 CREATE INDEX note_applies_idx_note_id ON note_applies (note_id);
-CREATE INDEX note_applies_idx_sync_id ON note_applies (sync_id);
 CREATE INDEX note_applies_idx_version_id ON note_applies (version_id);
 --
 -- Table: version_support
