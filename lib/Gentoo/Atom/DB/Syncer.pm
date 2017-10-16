@@ -53,107 +53,149 @@ sub _in_sync {
     $sync->insert;
     local $self->{sync_id} = $sync->sync_id;
     $cb->();
-    $sync->sync_stop( scalar time );
-    $sync->update;
-}
-
-sub _update_or_create_category {
-    my ( $self, $category_name ) = @_;
-    my $result =
-      $self->_Category->single( { category_name => $category_name } );
-    if ($result) {
-        $result->sync_id( $self->_sync_id );
-        $result->update;
-        return $result;
-    }
-    $result = $self->_Category->new(
-        { category_name => $category_name, sync_id => $self->_sync_id } );
-    $result->insert;
-    return $result;
+    $sync->update( { sync_start => scalar time } );
 }
 
 sub _sync_categories {
-    my ($self)    = @_;
-    my $_Category = $self->_Category;
-    my $sync_id   = $self->_sync_id;
+    my ($self) = @_;
+    my (@categories);
+
     Gentoo::Atom::Scraper::Categories->foreach(
         $self->_repo => sub {
-            $self->_sync_category( $self->_update_or_create_category( $_[0] ) );
-        },
-    );
-}
-
-sub _update_or_create_package {
-    my ( $self, $category_id, $package_name ) = @_;
-    my $result = $self->_Package->single(
-        { category_id => $category_id, package_name => $package_name } );
-    if ($result) {
-        $result->sync_id( $self->_sync_id );
-        $result->update;
-        return $result;
-    }
-    $result = $self->_Package->new(
-        {
-            category_id  => $category_id,
-            package_name => $package_name,
-            sync_id      => $self->_sync_id
+            push @categories, $_[0];
         }
     );
-    $result->insert;
-    return $result;
+
+    $self->_update_categories( \@categories );
+
+    for my $category (
+        $self->_Category->search( { sync_id => $self->_sync_id } )->all )
+    {
+        $self->_sync_category( $category->category_id,
+            $category->category_name );
+    }
+}
+
+sub _update_categories {
+    my ( $self, $categories ) = @_;
+    my $sync_id = $self->_sync_id;
+    my (@results) =
+      $self->_Category->search( { category_name => { '-in' => $categories } } )
+      ->all;
+
+    my (%seen) = map { $_ => 0 } @{$categories};
+    for my $item (@results) {
+        $seen{ $item->category_name }++;
+        $item->update( { sync_id => $sync_id } );
+    }
+    my (@new) = grep { not $seen{$_} } keys %seen;
+    if (@new) {
+        $self->_Category->populate(
+            [ [qw( category_name sync_id )], map { [ $_, $sync_id ] } @new ] );
+    }
 }
 
 sub _sync_category {
-    my ( $self, $category ) = @_;
-    my $sync_id  = $self->_sync_id;
-    my $_Package = $self->_Package;
+    my ( $self, $category_id, $category_name ) = @_;
+    my (@package_names);
     Gentoo::Atom::Scraper::Packages->foreach_category(
-        $self->_repo => $category->category_name,
+        $self->_repo => $category_name,
         sub {
-            my ($package_name) = @_;
-            $self->_sync_package(
-                $category,
-                $self->_update_or_create_package(
-                    $category->category_id, $package_name
-                )
-            );
+            push @package_names, $_[0];
         }
     );
+    $self->_update_packages( $category_id, $category_name, \@package_names );
+
+    my (@results) = $self->_Package->search(
+        { sync_id => $self->_sync_id, category_id => $category_id } )->all;
+
+    for my $package (@results) {
+        $self->_sync_package( $category_id, $category_name,
+            $package->package_id, $package->package_name );
+    }
 }
 
-sub _update_or_create_version {
-   my ( $self, $category_id, $package_id, $version_string ) = @_;
-   my $result = $self->_Version->single({ category_id => $category_id, package_id => $package_id, version_string => $version_string });
-   if ( $result ) { 
-     $result->sync_id( $self->_sync_id );
-     $result->update;
-     return $result;
-   }
-   $result = $self->_Version->new({
-      category_id => $category_id, 
-      package_id => $package_id,
-      version_string => $version_string,
-      sync_id => $self->_sync_id,
-    });
-  $result->insert;
-  return $result;
+sub _update_packages {
+    my ( $self, $category_id, $category_name, $packages ) = @_;
+    my $sync_id = $self->_sync_id;
+    my (%seen) = map { $_ => 0 } @{$packages};
+
+    while ( @{$packages} ) {
+
+        # beyond 10 or so the returns diminsh too slowly
+        my (@subset) = splice @{$packages}, 0, 20, ();
+
+        my (@results) = $self->_Package->search(
+            {
+                category_id  => $category_id,
+                package_name => { '-in' => \@subset }
+            },
+        )->all;
+
+        for my $item (@results) {
+            $seen{ $item->package_name }++;
+            $item->update( { sync_id => $sync_id } );
+        }
+    }
+    my (@new) = grep { not $seen{$_} } keys %seen;
+    if (@new) {
+        $self->_Package->populate(
+            [
+                [qw( package_name category_id sync_id )],
+                map { [ $_, $category_id, $sync_id ] } @new
+            ]
+        );
+    }
 }
 
 sub _sync_package {
-    my ( $self, $category, $package ) = @_;
-    my $sync_id  = $self->_sync_id;
-    my $_Version = $self->_Version;
-    Gentoo::Atom::Scraper::Versions->foreach_package(
-        $self->_repo,
-        $category->category_name,
-        $package->package_name,
-        sub {
-            my ($version) = @_;
-            my $version_record = $self->_update_or_create_version( $category->category_id, $package->package_id, 
-              $version );
-        },
+    my ( $self, $category_id, $category_name, $package_id, $package_name ) = @_;
+    my (@versions);
+    Gentoo::Atom::Scraper::Versions->foreach_package( $self->_repo,
+        $category_name, $package_name, sub { push @versions, $_[0] } );
+
+    $self->_update_versions(
+        $category_id,  $category_name, $package_id,
+        $package_name, \@versions
     );
+
+}
+
+sub _update_versions {
+    my (
+        $self,       $category_id,  $category_name,
+        $package_id, $package_name, $versions
+    ) = @_;
+    my $sync_id = $self->_sync_id;
+    my (%seen) = map { $_ => 0 } @{$versions};
+
+    while ( @{$versions} ) {
+
+        # beyond 10 or so the returns diminsh too slowly
+        my (@subset) = splice @{$versions}, 0, 20, ();
+
+        my (@results) = $self->_Version->search(
+            {
+                category_id    => $category_id,
+                package_id     => $package_id,
+                version_string => { '-in' => \@subset }
+            },
+        )->all;
+
+        for my $item (@results) {
+            $seen{ $item->version_string }++;
+            $item->update( { sync_id => $sync_id } );
+        }
+    }
+    my (@new) = grep { not $seen{$_} } keys %seen;
+    if (@new) {
+        $self->_Version->populate(
+            [
+                [qw( version_string package_id category_id sync_id )],
+                map { [ $_, $package_id, $category_id, $sync_id ] } @new
+            ]
+        );
+    }
 }
 
 1;
-
