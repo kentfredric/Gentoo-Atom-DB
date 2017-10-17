@@ -19,16 +19,12 @@ sub new {
     bless {
         '_repo'     => $repo,
         '_schema'   => $schema,
-        '_Sync'     => $schema->resultset('Sync'),
-        '_Category' => $schema->resultset('Category'),
         '_Package'  => $schema->resultset('Package'),
         '_Version'  => $schema->resultset('Version'),
     }, $package;
 }
 sub _schema   { $_[0]->{_schema} }
 sub _repo     { $_[0]->{_repo} }
-sub _Sync     { $_[0]->{_Sync} }
-sub _Category { $_[0]->{_Category} }
 sub _Package  { $_[0]->{_Package} }
 sub _Version  { $_[0]->{_Version} }
 
@@ -45,7 +41,7 @@ sub _trace {
 
 sub _inner_sync {
     my ($self) = @_;
-    my $sync = $self->_Sync->new( { sync_start => scalar time } );
+    my $sync = $self->resultset('Sync')->new( { sync_start => scalar time } );
     $sync->insert;
     my $sync_id = $sync->sync_id;
 
@@ -64,7 +60,7 @@ sub _inner_sync {
 
         my %seen_categories = map { $_ => 0 } @categories;
 
-        my (@all_categories) = $self->_Category->search(undef)->all;
+        my (@all_categories) = $self->resultset('Category')->search(undef)->all;
         for my $category (@all_categories) {
             next unless exists $seen_categories{ $category->category_name };
             $seen_categories{ $category->category_name }++;
@@ -81,7 +77,7 @@ sub _inner_sync {
             TRACE
               and
               $self->_trace( 'categories.sync.new.names' => \@new_categories );
-            $self->_Category->populate(
+            $self->resultset('Category')->populate(
                 [
                     [qw( category_name sync_id )],
                     map { [ $_, $sync_id ] } @new_categories
@@ -93,7 +89,7 @@ sub _inner_sync {
 
     # Synchronization of Packages in Categories
     for my $category (
-        $self->_Category->search( { 'sync_id' => $sync_id } )->all )
+        $self->resultset('Category')->search( { 'sync_id' => $sync_id } )->all )
     {
         TRACE
           and $self->_trace( 'category.sync.name' => $category->category_name );
