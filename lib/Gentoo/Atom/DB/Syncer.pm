@@ -14,6 +14,7 @@ use Gentoo::Atom::Scraper::Categories;
 use Gentoo::Atom::Scraper::Packages;
 use Gentoo::Atom::Scraper::Versions;
 use Gentoo::Atom::Scraper::Arches;
+use Gentoo::Atom::Scraper::Profiles;
 
 sub new {
     my ( $package, $repo, $schema ) = @_;
@@ -65,8 +66,10 @@ sub _inner_sync {
             $seen_arches{ $arch->architecture_name }++;
             $arch->update( { sync_id => $sync_id } );
         }
-        if ( my (@new_arches) =
-            grep { not $seen_arches{$_} } keys %seen_arches )
+        if (
+            my (@new_arches) =
+            grep { not $seen_arches{$_} } keys %seen_arches
+          )
         {
             TRACE
               and
@@ -78,6 +81,80 @@ sub _inner_sync {
                     map { [ $_, $sync_id ] } @new_arches
                 ]
             );
+        }
+    }
+
+    # Profile List Syncer
+    {
+        my (@profiles);
+        Gentoo::Atom::Scraper::Profiles->foreach(
+            $repo => sub { push @profiles, $_[0] } );
+
+        my %seen = ();
+        for my $profile ( grep { exists $_->{architecture_name} } @profiles ) {
+            $seen{ $profile->{architecture_name} } ||= {};
+            $seen{ $profile->{architecture_name} }{ $profile->{profile_name} }
+              {seen} = 0;
+            $seen{ $profile->{architecture_name} }{ $profile->{profile_name} }
+              {data} = $profile;
+        }
+        for my $base_profile ( grep { not exists $_->{architecture_name} }
+            @profiles )
+        {
+            $seen{'-base'} ||= {};
+            $seen{'-base'}{ $base_profile->{profile_name} }{seen} = 0;
+            $seen{'-base'}{ $base_profile->{profile_name} }{data} =
+              $base_profile;
+        }
+
+        TRACE and $self->_trace( 'profiles.sync.count', scalar @profiles );
+        my (@all_profiles) = $schema->resultset('Profile')
+          ->search( undef, { prefetch => 'architecture' } )->all;
+        for my $profile (@all_profiles) {
+            my $arch =
+              ( not defined $profile->architecture )
+              ? '-base'
+              : $profile->architecture->architecture_name;
+            next unless exists $seen{$arch};
+            next unless exists $seen{$arch}->{ $profile->profile_name };
+            $seen{$arch}->{ $profile->profile_name }{seen}++;
+            $profile->update( { sync_id => $sync_id } );
+        }
+        for my $arch ( sort keys %seen ) {
+            if (
+                my (@new_profiles) =
+                grep { not $seen{$arch}{$_}{seen} } keys %{ $seen{$arch} }
+              )
+            {
+                TRACE and $self->_trace( 'profiles.sync.new.arch' => $arch );
+                TRACE
+                  and $self->_trace(
+                    'profiles.sync.new.count' => scalar @new_profiles );
+                TRACE
+                  and
+                  $self->_trace( 'profiles.sync.new.names' => \@new_profiles );
+                if ( $arch ne '-base' ) {
+                    my $aid =
+                      $schema->resultset('Architecture')
+                      ->single( { architecture_name => $arch } )
+                      ->architecture_id;
+                    $schema->resultset('Profile')->populate(
+                        [
+                            [qw( profile_name architecture_id sync_id )],
+                            map { [ $_, $aid, $sync_id ] } @new_profiles,
+                        ]
+                    );
+                }
+                else {
+                    $schema->resultset('Profile')->populate(
+                        [
+                            [qw( profile_name sync_id )],
+                            map { [ $_, $sync_id ] } @new_profiles,
+                        ]
+                    );
+
+                }
+            }
         }
     }
 
