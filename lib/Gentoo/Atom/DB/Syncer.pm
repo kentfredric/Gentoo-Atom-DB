@@ -35,117 +35,116 @@ sub _sync_id  { $_[0]->{sync_id} }
 
 sub sync {
     my ($self) = @_;
-
-    $self->_schema->txn_do(
-        sub {
-            $self->_in_sync(
-                sub {
-                    $self->_sync_categories;
-                }
-            );
-        }
-    );
+    $self->_schema->txn_do( sub { $self->_inner_sync } );
 }
 
-sub _in_sync {
-    my ( $self, $cb ) = @_;
-    my $sync = $_[0]->_Sync->new( { sync_start => scalar time } );
-    $sync->insert;
-    local $self->{sync_id} = $sync->sync_id;
-    $cb->();
-    $sync->update( { sync_start => scalar time } );
+use constant TRACE => $ENV{TRACE_ENABLED};
+
+sub _trace {
+    my ( $self, $kind, $data ) = @_;
 }
 
-sub _sync_categories {
+sub _inner_sync {
     my ($self) = @_;
-    my (@categories);
+    my $sync = $self->_Sync->new( { sync_start => scalar time } );
+    $sync->insert;
 
-    Gentoo::Atom::Scraper::Categories->foreach(
-        $self->_repo => sub {
-            push @categories, $_[0];
+    TRACE and $self->_trace( 'sync.id'    => $sync->sync_id );
+    TRACE and $self->_trace( 'sync.start' => $sync->sync_start );
+
+    local $self->{sync_id} = $sync->sync_id;
+
+    my $sync_id = $sync->sync_id;
+    my $repo    = $self->_repo;
+
+    {
+        my @categories;
+        Gentoo::Atom::Scraper::Categories->foreach(
+            $repo => sub { push @categories, $_[0] }, );
+
+        TRACE and $self->_trace( 'categories.sync.count', scalar @categories );
+
+        my %seen_categories = map { $_ => 0 } @categories;
+
+        my (@all_categories) = $self->_Category->search(undef)->all;
+        for my $category (@all_categories) {
+            next unless exists $seen_categories{ $category->category_name };
+            $seen_categories{ $category->category_name }++;
+            $category->update( { sync_id => $sync_id } );
         }
-    );
+        if (
+            my (@new_categories) =
+            grep { not $seen_categories{$_} } keys %seen_categories
+          )
+        {
+            TRACE
+              and $self->_trace(
+                'categories.sync.new.count' => scalar @new_categories );
+            TRACE
+              and
+              $self->_trace( 'categories.sync.new.names' => \@new_categories );
+            $self->_Category->populate(
+                [
+                    [qw( category_name sync_id )],
+                    map { [ $_, $sync_id ] } @new_categories
+                ]
+            );
 
-    $self->_update_categories( \@categories );
+        }
+    }
 
     for my $category (
         $self->_Category->search( { sync_id => $self->_sync_id } )->all )
     {
-        $self->_sync_category( $category->category_id,
-            $category->category_name );
-    }
-}
+        TRACE
+          and $self->_trace( 'category.sync.name' => $category->category_name );
 
-sub _update_categories {
-    my ( $self, $categories ) = @_;
-    my $sync_id = $self->_sync_id;
-    my (@results) =
-      $self->_Category->search( { category_name => { '-in' => $categories } } )
-      ->all;
+        my $category_id   = $category->category_id;
+        my $category_name = $category->category_name;
+        my (@package_names);
+        Gentoo::Atom::Scraper::Packages->foreach_category(
+            $repo => $category_name,
+            sub {
+                push @package_names, $_[0];
+            }
+        );
+        TRACE
+          and $self->_trace(
+            'category.sync.packages.count' => scalar @package_names );
 
-    my (%seen) = map { $_ => 0 } @{$categories};
-    for my $item (@results) {
-        $seen{ $item->category_name }++;
-        $item->update( { sync_id => $sync_id } );
-    }
-    my (@new) = grep { not $seen{$_} } keys %seen;
-    if (@new) {
-        $self->_Category->populate(
-            [ [qw( category_name sync_id )], map { [ $_, $sync_id ] } @new ] );
-    }
-}
+        my (%seen_packages) = map { $_ => 0 } @package_names;
 
-sub _sync_category {
-    my ( $self, $category_id, $category_name ) = @_;
-    my (@package_names);
-    Gentoo::Atom::Scraper::Packages->foreach_category(
-        $self->_repo => $category_name,
-        sub {
-            push @package_names, $_[0];
+        my (@all_packages) =
+          $self->_Package->search( { category_id => $category_id }, )->all;
+        for my $package (@all_packages) {
+            next unless exists $seen_packages{ $package->package_name };
+            $seen_packages{ $package->package_name }++;
+            $package->update( { sync_id => $sync_id } );
         }
-    );
-    $self->_update_packages( $category_id, $category_name, \@package_names );
 
-    my (@results) = $self->_Package->search(
-        { sync_id => $self->_sync_id, category_id => $category_id } )->all;
-
-    for my $package (@results) {
-        $self->_sync_package( $category_id, $category_name,
-            $package->package_id, $package->package_name );
-    }
-}
-
-sub _update_packages {
-    my ( $self, $category_id, $category_name, $packages ) = @_;
-    my $sync_id = $self->_sync_id;
-    my (%seen) = map { $_ => 0 } @{$packages};
-
-    while ( @{$packages} ) {
-
-        # beyond 10 or so the returns diminsh too slowly
-        my (@subset) = splice @{$packages}, 0, 20, ();
+        my (@new_packages) =
+          grep { not $seen_packages{$_} } keys %seen_packages;
+        if (@new_packages) {
+            $self->_Package->populate(
+                [
+                    [qw( package_name category_id sync_id )],
+                    map { [ $_, $category_id, $sync_id ] } @new_packages
+                ]
+            );
+        }
 
         my (@results) = $self->_Package->search(
-            {
-                category_id  => $category_id,
-                package_name => { '-in' => \@subset }
-            },
-        )->all;
+            { sync_id => $self->_sync_id, category_id => $category_id } )->all;
 
-        for my $item (@results) {
-            $seen{ $item->package_name }++;
-            $item->update( { sync_id => $sync_id } );
+        for my $package (@results) {
+            $self->_sync_package( $category_id, $category_name,
+                $package->package_id, $package->package_name );
         }
+
     }
-    my (@new) = grep { not $seen{$_} } keys %seen;
-    if (@new) {
-        $self->_Package->populate(
-            [
-                [qw( package_name category_id sync_id )],
-                map { [ $_, $category_id, $sync_id ] } @new
-            ]
-        );
-    }
+
+    $sync->update( { sync_stop => scalar time } );
+    TRACE and $self->_trace( 'sync.stop' => $sync->sync_stop );
 }
 
 sub _sync_package {
