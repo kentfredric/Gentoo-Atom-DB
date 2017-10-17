@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Thu Oct 12 10:53:04 2017
+-- Created on Tue Oct 17 17:13:56 2017
 -- 
 ;
 SET foreign_key_checks=0;
@@ -113,7 +113,7 @@ CREATE TABLE `package` (
 CREATE TABLE `profile` (
   `profile_id` integer NOT NULL auto_increment,
   `profile_name` text NOT NULL,
-  `architecture_id` integer NOT NULL,
+  `architecture_id` integer NULL,
   `parent_profile_id` integer NULL,
   `sync_id` integer NULL,
   INDEX `profile_idx_architecture_id` (`architecture_id`),

@@ -325,7 +325,7 @@ BEGIN {    # Profile
         },
         'architecture_id' => {
             data_type      => 'integer',
-            is_nullable    => 0,
+            is_nullable    => 1,
             is_numeric     => 1,
             is_foreign_key => 1,
         },
@@ -342,7 +342,10 @@ BEGIN {    # Profile
         'architecture' => 'Gentoo::Atom::DB::Schema::Result::Architecture',
         {
             'foreign.architecture_id' => 'self.architecture_id',
-        }
+        },
+        {
+            'join_type' => 'left',
+        },
     );
     __PACKAGE__->belongs_to(
         'parent_profile' => 'Gentoo::Atom::DB::Schema::Result::Profile',

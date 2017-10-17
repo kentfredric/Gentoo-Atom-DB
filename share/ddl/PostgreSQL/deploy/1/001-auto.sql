@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::PostgreSQL
--- Created on Thu Oct 12 10:53:04 2017
+-- Created on Tue Oct 17 17:13:55 2017
 -- 
 ;
 --
@@ -124,7 +124,7 @@ CREATE INDEX "package_idx_sync_id" on "package" ("sync_id");
 CREATE TABLE "profile" (
   "profile_id" serial NOT NULL,
   "profile_name" text NOT NULL,
-  "architecture_id" integer NOT NULL,
+  "architecture_id" integer,
   "parent_profile_id" integer,
   "sync_id" integer,
   PRIMARY KEY ("profile_id"),

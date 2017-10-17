@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::SQLite
--- Created on Thu Oct 12 10:53:03 2017
+-- Created on Tue Oct 17 17:13:55 2017
 -- 
 
 ;
@@ -105,7 +105,7 @@ CREATE UNIQUE INDEX package_category_id_package_name ON package (category_id, pa
 CREATE TABLE profile (
   profile_id INTEGER PRIMARY KEY NOT NULL,
   profile_name text NOT NULL,
-  architecture_id integer NOT NULL,
+  architecture_id integer,
   parent_profile_id integer,
   sync_id integer,
   FOREIGN KEY (architecture_id) REFERENCES architecture(architecture_id),
