@@ -37,6 +37,14 @@ sub _trace {
     my ( $self, $kind, $data ) = @_;
 }
 
+our %SUPPORT_LEVELS = (
+    stable     => 0,    # arch
+    testing    => 0,    # ~arch
+    unknown    => 0,    # KEYWORDS=""
+    broken     => 0,    # -arch
+    untestable => 0,    # KEYWORDS="-* ..."
+);
+
 sub _inner_sync {
     my ($self) = @_;
     my $schema = $self->_schema;
@@ -48,6 +56,32 @@ sub _inner_sync {
     TRACE and $self->_trace( 'sync.start' => $sync->sync_start );
 
     my $repo = $self->_repo;
+
+    # Support Level Snyc
+    {
+        my (%seen_supports) = %SUPPORT_LEVELS;
+        my (@all_supports) =
+          $schema->resultset("SupportLevel")->search(undef)->all;
+        for my $level (@all_supports) {
+            next unless exists $seen_supports{ $level->support_level_name };
+            $seen_supports{ $level->support_level_name }++;
+        }
+        if (
+            my (@new_levels) =
+            grep { not $seen_supports{$_} } keys %seen_supports
+          )
+        {
+            TRACE
+              and $self->_trace(
+                'supportlevels.sync.new.count' => scalar @new_levels );
+            TRACE
+              and
+              $self->_trace( 'supportlevels.sync.new.names' => \@new_levels );
+            $schema->resultset("SupportLevel")
+              ->populate(
+                [ [qw/support_level_name/], map { [$_] } @new_levels, ] );
+        }
+    }
 
     # Arch List Sync
     {
