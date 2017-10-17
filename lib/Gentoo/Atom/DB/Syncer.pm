@@ -13,6 +13,7 @@ our $VERSION = '0.001000';
 use Gentoo::Atom::Scraper::Categories;
 use Gentoo::Atom::Scraper::Packages;
 use Gentoo::Atom::Scraper::Versions;
+use Gentoo::Atom::Scraper::Arches;
 
 sub new {
     my ( $package, $repo, $schema ) = @_;
@@ -46,6 +47,39 @@ sub _inner_sync {
     TRACE and $self->_trace( 'sync.start' => $sync->sync_start );
 
     my $repo = $self->_repo;
+
+    # Arch List Sync
+    {
+        my @arches;
+        Gentoo::Atom::Scraper::Arches->foreach(
+            $repo => sub { push @arches, $_[0] } );
+
+        TRACE and $self->_trace( 'arches.sync.count', scalar @arches );
+
+        my %seen_arches = map { $_ => 0 } @arches;
+
+        my (@all_arches) =
+          $schema->resultset('Architecture')->search(undef)->all;
+        for my $arch (@all_arches) {
+            next unless exists $seen_arches{ $arch->architecture_name };
+            $seen_arches{ $arch->architecture_name }++;
+            $arch->update( { sync_id => $sync_id } );
+        }
+        if ( my (@new_arches) =
+            grep { not $seen_arches{$_} } keys %seen_arches )
+        {
+            TRACE
+              and
+              $self->_trace( 'arches.sync.new.count' => scalar @new_arches );
+            TRACE and $self->_trace( 'arches.sync.new.names' => \@new_arches );
+            $schema->resultset("Architecture")->populate(
+                [
+                    [qw( architecture_name sync_id )],
+                    map { [ $_, $sync_id ] } @new_arches
+                ]
+            );
+        }
+    }
 
     # Category List Synchronization
     {
