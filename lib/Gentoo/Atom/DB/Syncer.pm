@@ -57,6 +57,7 @@ sub _inner_sync {
     my $sync_id = $sync->sync_id;
     my $repo    = $self->_repo;
 
+    # Category List Synchronization
     {
         my @categories;
         Gentoo::Atom::Scraper::Categories->foreach(
@@ -93,8 +94,9 @@ sub _inner_sync {
         }
     }
 
+    # Synchronization of Packages in Categories
     for my $category (
-        $self->_Category->search( { sync_id => $self->_sync_id } )->all )
+        $self->_Category->search( { 'sync_id' => $self->_sync_id } )->all )
     {
         TRACE
           and $self->_trace( 'category.sync.name' => $category->category_name );
@@ -133,68 +135,47 @@ sub _inner_sync {
             );
         }
 
-        my (@results) = $self->_Package->search(
-            { sync_id => $self->_sync_id, category_id => $category_id } )->all;
+        for my $package (
+            $self->_Package->search(
+                { sync_id => $self->_sync_id, category_id => $category_id }
+            )->all
+          )
+        {
+            my $package_id   = $package->package_id;
+            my $package_name = $package->package_name;
+            my (@versions);
+            Gentoo::Atom::Scraper::Versions->foreach_package( $repo,
+                $category_name, $package_name, sub { push @versions, $_[0] } );
 
-        for my $package (@results) {
-            $self->_sync_package( $category_id, $category_name,
-                $package->package_id, $package->package_name );
+            my (%seen_versions) = map { $_ => 0 } @versions;
+
+            my (@all_versions) = $self->_Version->search(
+                {
+                    category_id => $category_id,
+                    package_id  => $package_id,
+                },
+            )->all;
+
+            for my $version (@all_versions) {
+                next unless exists $seen_versions{ $version->version_string };
+                $seen_versions{ $version->version_string }++;
+                $version->update( { sync_id => $sync_id } );
+            }
+
+            my (@new_versions) =
+              grep { not $seen_versions{$_} } keys %seen_versions;
+            if (@new_versions) {
+                $self->_Version->populate(
+                    [
+                        [qw( version_string package_id category_id sync_id )],
+                        map { [ $_, $package_id, $category_id, $sync_id ] }
+                          @new_versions
+                    ]
+                );
+            }
         }
-
     }
-
     $sync->update( { sync_stop => scalar time } );
     TRACE and $self->_trace( 'sync.stop' => $sync->sync_stop );
 }
-
-sub _sync_package {
-    my ( $self, $category_id, $category_name, $package_id, $package_name ) = @_;
-    my (@versions);
-    Gentoo::Atom::Scraper::Versions->foreach_package( $self->_repo,
-        $category_name, $package_name, sub { push @versions, $_[0] } );
-
-    $self->_update_versions(
-        $category_id,  $category_name, $package_id,
-        $package_name, \@versions
-    );
-
-}
-
-sub _update_versions {
-    my (
-        $self,       $category_id,  $category_name,
-        $package_id, $package_name, $versions
-    ) = @_;
-    my $sync_id = $self->_sync_id;
-    my (%seen) = map { $_ => 0 } @{$versions};
-
-    while ( @{$versions} ) {
-
-        # beyond 10 or so the returns diminsh too slowly
-        my (@subset) = splice @{$versions}, 0, 20, ();
-
-        my (@results) = $self->_Version->search(
-            {
-                category_id    => $category_id,
-                package_id     => $package_id,
-                version_string => { '-in' => \@subset }
-            },
-        )->all;
-
-        for my $item (@results) {
-            $seen{ $item->version_string }++;
-            $item->update( { sync_id => $sync_id } );
-        }
-    }
-    my (@new) = grep { not $seen{$_} } keys %seen;
-    if (@new) {
-        $self->_Version->populate(
-            [
-                [qw( version_string package_id category_id sync_id )],
-                map { [ $_, $package_id, $category_id, $sync_id ] } @new
-            ]
-        );
-    }
-}
-
 1;
