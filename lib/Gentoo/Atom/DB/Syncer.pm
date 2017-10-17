@@ -31,7 +31,6 @@ sub _Sync     { $_[0]->{_Sync} }
 sub _Category { $_[0]->{_Category} }
 sub _Package  { $_[0]->{_Package} }
 sub _Version  { $_[0]->{_Version} }
-sub _sync_id  { $_[0]->{sync_id} }
 
 sub sync {
     my ($self) = @_;
@@ -48,13 +47,11 @@ sub _inner_sync {
     my ($self) = @_;
     my $sync = $self->_Sync->new( { sync_start => scalar time } );
     $sync->insert;
+    my $sync_id = $sync->sync_id;
 
-    TRACE and $self->_trace( 'sync.id'    => $sync->sync_id );
+    TRACE and $self->_trace( 'sync.id'    => $sync_id );
     TRACE and $self->_trace( 'sync.start' => $sync->sync_start );
 
-    local $self->{sync_id} = $sync->sync_id;
-
-    my $sync_id = $sync->sync_id;
     my $repo    = $self->_repo;
 
     # Category List Synchronization
@@ -96,7 +93,7 @@ sub _inner_sync {
 
     # Synchronization of Packages in Categories
     for my $category (
-        $self->_Category->search( { 'sync_id' => $self->_sync_id } )->all )
+        $self->_Category->search( { 'sync_id' => $sync_id } )->all )
     {
         TRACE
           and $self->_trace( 'category.sync.name' => $category->category_name );
@@ -137,7 +134,7 @@ sub _inner_sync {
 
         for my $package (
             $self->_Package->search(
-                { sync_id => $self->_sync_id, category_id => $category_id }
+                { sync_id => $sync_id, category_id => $category_id }
             )->all
           )
         {
